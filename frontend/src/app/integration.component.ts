@@ -95,50 +95,50 @@ interface IntegrationResult {
         </div>
       </div>
       
-      <div class="results-section" *ngIf="lastResult">
-        <h2>Integration Result</h2>
-        <div class="result-grid">
-          <div class="result-item">
-            <strong>∫ {{ integrationParams.function }} dx = {{ lastResult.value.toFixed(6) }}</strong>
-          </div>
-          <div class="result-item">
-            <span>Method: {{ lastResult.method }}</span>
-          </div>
-          <div class="result-item">
-            <span>Points used: {{ lastResult.num_points }}</span>
-          </div>
-          <div class="result-item" *ngIf="lastResult.error_estimate">
-            <span>Error estimate: {{ lastResult.error_estimate.toFixed(8) }}</span>
-          </div>
+      <div class="graph-section" *ngIf="lastResult">
+        <h2>f(x) = {{ integrationParams.function }}</h2>
+        <div class="result-info">
+          <span><strong>∫ f(x) dx = {{ lastResult.value.toFixed(6) }}</strong></span>
+          <span>Method: {{ lastResult.method }} | Points: {{ lastResult.num_points }}</span>
         </div>
-      </div>
-      
-      <div class="visualization-section" *ngIf="lastResult">
-        <h2>Function Visualization</h2>
-        <div class="simple-chart">
-          <div class="chart-header">
-            <span>f(x) = {{ integrationParams.function }}</span>
-            <span>Domain: [{{ integrationParams.lower_bound }}, {{ integrationParams.upper_bound }}]</span>
-          </div>
-          
-          <div class="data-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>x</th>
-                  <th>f(x)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let point of getSamplePoints(); let i = index">
-                  <td>{{ point.x.toFixed(3) }}</td>
-                  <td>{{ point.y.toFixed(6) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div class="ascii-plot" [innerHTML]="getAsciiPlot()"></div>
+        
+        <div class="graph-container">
+          <svg class="function-graph" viewBox="0 0 400 200">
+            <!-- Grid lines -->
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            
+            <!-- Axes -->
+            <line x1="40" y1="160" x2="360" y2="160" stroke="#333" stroke-width="1" />
+            <line x1="40" y1="20" x2="40" y2="160" stroke="#333" stroke-width="1" />
+            
+            <!-- Function curve -->
+            <polyline 
+              [attr.points]="getGraphPoints()" 
+              fill="none" 
+              stroke="#007bff" 
+              stroke-width="2"
+            />
+            
+            <!-- Fill area under curve -->
+            <polygon 
+              [attr.points]="getFillPoints()" 
+              fill="rgba(0, 123, 255, 0.2)" 
+              stroke="none"
+            />
+            
+            <!-- Axis labels -->
+            <text x="200" y="185" text-anchor="middle" font-size="12" fill="#666">
+              x: [{{ integrationParams.lower_bound }}, {{ integrationParams.upper_bound }}]
+            </text>
+            <text x="25" y="95" text-anchor="middle" font-size="12" fill="#666" transform="rotate(-90, 25, 95)">
+              f(x)
+            </text>
+          </svg>
         </div>
       </div>
       
@@ -245,77 +245,34 @@ interface IntegrationResult {
       background-color: #f0f0f0;
     }
     
-    .results-section {
+    .graph-section {
       background-color: white;
       border: 2px solid #333;
       padding: 20px;
       margin-bottom: 20px;
     }
     
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    
-    .result-item {
-      padding: 10px;
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-    }
-    
-    .visualization-section {
-      background-color: white;
-      border: 2px solid #333;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .chart-header {
+    .result-info {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: #f0f0f0;
-      border: 1px solid #333;
-      font-weight: bold;
-    }
-    
-    .data-table {
-      max-height: 200px;
-      overflow-y: auto;
+      align-items: center;
       margin-bottom: 20px;
-      border: 1px solid #333;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: 'Courier New', monospace;
-    }
-    
-    th, td {
-      padding: 8px;
-      text-align: right;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    th {
-      background-color: #f0f0f0;
-      font-weight: bold;
-      position: sticky;
-      top: 0;
-    }
-    
-    .ascii-plot {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      line-height: 1.2;
-      white-space: pre;
-      background-color: #f8f9fa;
       padding: 15px;
+      background-color: #f0f0f0;
       border: 1px solid #333;
-      overflow-x: auto;
+      font-weight: bold;
+    }
+    
+    .graph-container {
+      width: 100%;
+      height: 250px;
+      border: 1px solid #333;
+      background-color: #fafafa;
+    }
+    
+    .function-graph {
+      width: 100%;
+      height: 100%;
     }
     
     .status-bar {
@@ -369,13 +326,10 @@ interface IntegrationResult {
         flex-direction: column;
       }
       
-      .result-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .chart-header {
+      .result-info {
         flex-direction: column;
-        gap: 5px;
+        gap: 10px;
+        text-align: center;
       }
       
       .ref-item {
@@ -472,27 +426,9 @@ export class IntegrationComponent implements OnInit, OnDestroy {
     this.lastResult = result;
   }
   
-  getSamplePoints(): {x: number, y: number}[] {
-    if (!this.lastResult) return [];
-    
-    const points = [];
-    const step = Math.max(1, Math.floor(this.lastResult.x_values.length / 20));
-    
-    for (let i = 0; i < this.lastResult.x_values.length; i += step) {
-      points.push({
-        x: this.lastResult.x_values[i],
-        y: this.lastResult.y_values[i]
-      });
-    }
-    
-    return points.slice(0, 10); // Show only first 10 points
-  }
-  
-  getAsciiPlot(): string {
+  getGraphPoints(): string {
     if (!this.lastResult) return '';
     
-    const width = 60;
-    const height = 15;
     const xValues = this.lastResult.x_values;
     const yValues = this.lastResult.y_values;
     
@@ -503,44 +439,40 @@ export class IntegrationComponent implements OnInit, OnDestroy {
     const minY = Math.min(...yValues);
     const maxY = Math.max(...yValues);
     
-    // Create grid
-    const grid: string[][] = [];
-    for (let i = 0; i < height; i++) {
-      grid[i] = new Array(width).fill(' ');
-    }
+    // Graph dimensions (leaving margin for axes)
+    const graphWidth = 320; // 360 - 40
+    const graphHeight = 140; // 160 - 20
+    const offsetX = 40;
+    const offsetY = 20;
     
-    // Plot points
-    for (let i = 0; i < xValues.length; i += Math.max(1, Math.floor(xValues.length / width))) {
-      const x = Math.floor(((xValues[i] - minX) / (maxX - minX)) * (width - 1));
-      const y = height - 1 - Math.floor(((yValues[i] - minY) / (maxY - minY)) * (height - 1));
-      
-      if (x >= 0 && x < width && y >= 0 && y < height) {
-        grid[y][x] = '*';
-      }
-    }
+    // Convert data points to SVG coordinates
+    const points = xValues.map((x, i) => {
+      const svgX = offsetX + ((x - minX) / (maxX - minX)) * graphWidth;
+      const svgY = offsetY + (1 - (yValues[i] - minY) / (maxY - minY)) * graphHeight;
+      return `${svgX},${svgY}`;
+    });
     
-    // Add axes
-    const zeroY = height - 1 - Math.floor(((0 - minY) / (maxY - minY)) * (height - 1));
-    if (zeroY >= 0 && zeroY < height) {
-      for (let x = 0; x < width; x++) {
-        if (grid[zeroY][x] === ' ') grid[zeroY][x] = '-';
-      }
-    }
+    return points.join(' ');
+  }
+  
+  getFillPoints(): string {
+    if (!this.lastResult) return '';
     
-    // Convert to string
-    let plot = '';
-    for (let y = 0; y < height; y++) {
-      const yValue = maxY - (y / (height - 1)) * (maxY - minY);
-      const yLabel = yValue.toFixed(2).padStart(8);
-      plot += yLabel + '|' + grid[y].join('') + '\n';
-    }
+    const graphPoints = this.getGraphPoints();
+    if (!graphPoints) return '';
     
-    // Add x-axis labels
-    const xLabel = '        +' + '-'.repeat(width);
-    plot += xLabel + '\n';
-    plot += '         ' + minX.toFixed(2).padEnd(width - maxX.toFixed(2).length) + maxX.toFixed(2);
+    const xValues = this.lastResult.x_values;
+    const minX = Math.min(...xValues);
+    const maxX = Math.max(...xValues);
     
-    return plot;
+    const offsetX = 40;
+    const baseY = 160; // x-axis position
+    
+    // Start from bottom-left, trace the curve, then back to bottom-right
+    const startX = offsetX;
+    const endX = offsetX + 320;
+    
+    return `${startX},${baseY} ${graphPoints} ${endX},${baseY}`;
   }
   
   getStatusClass(): string {
