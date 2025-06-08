@@ -28,7 +28,7 @@ interface IntegrationResult {
 })
 export class IntegrationComponent implements OnInit, OnDestroy {
   private ws?: WebSocket;
-  private debounceTimer?: number;
+  private debounceTimer?: ReturnType<typeof setTimeout>;
   
   integrationParams: IntegrationRequest = {
     function: 'x**2',
@@ -98,7 +98,7 @@ export class IntegrationComponent implements OnInit, OnDestroy {
       clearTimeout(this.debounceTimer);
     }
     
-    this.debounceTimer = window.setTimeout(() => {
+    this.debounceTimer = setTimeout(() => {
       this.sendIntegrationRequest();
     }, 500);
   }
