@@ -1,6 +1,6 @@
 
 import { Component } from '@angular/core';
-import { IntegrationComponent } from './integration.component';
+import { IntegrationComponent } from './integration/integration.component';
 
 @Component({
   selector: 'app-root',

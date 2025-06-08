@@ -1,0 +1,146 @@
+<div class="container">
+  <h1>Numerical Integration Calculator</h1>
+  
+  <div class="integration-form">
+    <h2>∫ f(x) dx</h2>
+    
+    <div class="input-group">
+      <label for="function">Function f(x):</label>
+      <input 
+        id="function"
+        type="text" 
+        [(ngModel)]="integrationParams.function"
+        placeholder="e.g., x**2, sin(x), exp(x)"
+        (input)="onParameterChange()"
+      />
+    </div>
+    
+    <div class="bounds-group">
+      <div class="input-group">
+        <label for="lower">Lower bound (a):</label>
+        <input 
+          id="lower"
+          type="number" 
+          [(ngModel)]="integrationParams.lower_bound"
+          step="0.1"
+          (input)="onParameterChange()"
+        />
+      </div>
+      
+      <div class="input-group">
+        <label for="upper">Upper bound (b):</label>
+        <input 
+          id="upper"
+          type="number" 
+          [(ngModel)]="integrationParams.upper_bound"
+          step="0.1"
+          (input)="onParameterChange()"
+        />
+      </div>
+    </div>
+    
+    <div class="settings-group">
+      <div class="input-group">
+        <label for="points">Number of points:</label>
+        <input 
+          id="points"
+          type="number" 
+          [(ngModel)]="integrationParams.num_points"
+          min="10"
+          max="1000"
+          step="10"
+          (input)="onParameterChange()"
+        />
+      </div>
+      
+      <div class="input-group">
+        <label for="method">Integration method:</label>
+        <select 
+          id="method"
+          [(ngModel)]="integrationParams.method"
+          (change)="onParameterChange()"
+        >
+          <option value="trapezoidal">Trapezoidal Rule</option>
+          <option value="simpson">Simpson's Rule</option>
+          <option value="midpoint">Midpoint Rule</option>
+          <option value="monte_carlo">Monte Carlo</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <div class="graph-section" *ngIf="lastResult">
+    <h2>f(x) = {{ integrationParams.function }}</h2>
+    <div class="result-info">
+      <span><strong>∫ f(x) dx = {{ lastResult.value.toFixed(6) }}</strong></span>
+      <span>Method: {{ lastResult.method }} | Points: {{ lastResult.num_points }}</span>
+    </div>
+    
+    <div class="graph-container">
+      <svg class="function-graph" viewBox="0 0 400 200">
+        <!-- Grid lines -->
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+        
+        <!-- Axes -->
+        <line x1="40" y1="160" x2="360" y2="160" stroke="#333" stroke-width="1" />
+        <line x1="40" y1="20" x2="40" y2="160" stroke="#333" stroke-width="1" />
+        
+        <!-- Function curve -->
+        <polyline 
+          [attr.points]="getGraphPoints()" 
+          fill="none" 
+          stroke="#007bff" 
+          stroke-width="2"
+        />
+        
+        <!-- Fill area under curve -->
+        <polygon 
+          [attr.points]="getFillPoints()" 
+          fill="rgba(0, 123, 255, 0.2)" 
+          stroke="none"
+        />
+        
+        <!-- Axis labels -->
+        <text x="200" y="185" text-anchor="middle" font-size="12" fill="#666">
+          x: [{{ integrationParams.lower_bound }}, {{ integrationParams.upper_bound }}]
+        </text>
+        <text x="25" y="95" text-anchor="middle" font-size="12" fill="#666" transform="rotate(-90, 25, 95)">
+          f(x)
+        </text>
+      </svg>
+    </div>
+  </div>
+  
+  <div class="status-bar">
+    <span [class]="getStatusClass()">
+      {{ errorMessage || (isConnected ? 'Connected to server' : 'Connecting to server...') }}
+    </span>
+  </div>
+  
+  <div class="reference-section">
+    <h3>Function Reference</h3>
+    <div class="reference-grid">
+      <div class="ref-item">
+        <strong>Basic operations:</strong>
+        <span>+, -, *, /, ** (power)</span>
+      </div>
+      <div class="ref-item">
+        <strong>Math functions:</strong>
+        <span>sin(x), cos(x), tan(x), exp(x), log(x), sqrt(x)</span>
+      </div>
+      <div class="ref-item">
+        <strong>Constants:</strong>
+        <span>pi, e</span>
+      </div>
+      <div class="ref-item">
+        <strong>Examples:</strong>
+        <span>x**2 + 3*x + 1, sin(x)*cos(x), exp(-x**2)</span>
+      </div>
+    </div>
+  </div>
+</div>

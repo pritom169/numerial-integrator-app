@@ -1,0 +1,165 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+}
+
+h2 {
+  color: #555;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+h3 {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.integration-form {
+  background-color: white;
+  border: 2px solid #333;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.bounds-group, .settings-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.bounds-group .input-group,
+.settings-group .input-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333;
+  background-color: white;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  outline: 2px solid #666;
+  background-color: #f0f0f0;
+}
+
+.graph-section {
+  background-color: white;
+  border: 2px solid #333;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.result-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f0f0f0;
+  border: 1px solid #333;
+  font-weight: bold;
+}
+
+.graph-container {
+  width: 100%;
+  height: 250px;
+  border: 1px solid #333;
+  background-color: #fafafa;
+}
+
+.function-graph {
+  width: 100%;
+  height: 100%;
+}
+
+.status-bar {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #333;
+  background-color: white;
+}
+
+.status-connected {
+  color: #006600;
+  font-weight: bold;
+}
+
+.status-error {
+  color: #cc0000;
+  font-weight: bold;
+}
+
+.status-connecting {
+  color: #ff8800;
+  font-weight: bold;
+}
+
+.reference-section {
+  background-color: white;
+  border: 2px solid #333;
+  padding: 20px;
+}
+
+.reference-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.ref-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+}
+
+.ref-item strong {
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .bounds-group, .settings-group {
+    flex-direction: column;
+  }
+  
+  .result-info {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .ref-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
